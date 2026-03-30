@@ -5,24 +5,23 @@
 class Lerd < Formula
   desc "Local Laravel development environment for macOS"
   homepage "https://github.com/geodro/lerd"
-  version "1.1.0-alpha.1"
+  version "1.2.0-alpha.1"
   license "MIT"
 
-  depends_on "dnsmasq"
   depends_on "podman"
   depends_on :macos
 
   if Hardware::CPU.intel?
-    url "https://github.com/geodro/lerd/releases/download/v1.1.0-alpha.1/lerd_1.1.0-alpha.1_darwin_amd64.tar.gz"
-    sha256 "07d4b336d5df8e36144cc7246c8ecd0480600ae694fbf962f2bf345f3620a48e"
+    url "https://github.com/geodro/lerd/releases/download/v1.2.0-alpha.1/lerd_1.2.0-alpha.1_darwin_amd64.tar.gz"
+    sha256 "cf41d79bfc987c7b2bff1fa1c50ccadc76cce126d8b00cb87cae014532a9e308"
 
     define_method(:install) do
       bin.install "lerd"
     end
   end
   if Hardware::CPU.arm?
-    url "https://github.com/geodro/lerd/releases/download/v1.1.0-alpha.1/lerd_1.1.0-alpha.1_darwin_arm64.tar.gz"
-    sha256 "c2e94dc64be31d65338fa936b1ac42e91ce10bfd3d219c592d4e1cadd3df9dd6"
+    url "https://github.com/geodro/lerd/releases/download/v1.2.0-alpha.1/lerd_1.2.0-alpha.1_darwin_arm64.tar.gz"
+    sha256 "e371a3bdbd7bb42f1d0db10b481e83aa0baa0f609f6b0b877c9e1a5004b30f93"
 
     define_method(:install) do
       bin.install "lerd"
@@ -32,6 +31,9 @@ class Lerd < Formula
   def caveats
     <<~EOS
       Run `lerd install` to complete Lerd setup.
+
+      To uninstall cleanly, run `lerd uninstall` before `brew uninstall lerd`.
+      If you already removed the binary, run `~/.local/bin/lerd-cleanup` instead.
     EOS
   end
 end
