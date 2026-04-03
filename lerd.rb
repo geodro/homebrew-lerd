@@ -5,15 +5,15 @@
 class Lerd < Formula
   desc "Local Laravel development environment for Linux and macOS"
   homepage "https://github.com/geodro/lerd"
-  version "1.4.1-alpha.16"
+  version "1.4.1-alpha.17"
   license "MIT"
 
   depends_on "podman"
   depends_on :macos
 
   if Hardware::CPU.intel?
-    url "https://github.com/geodro/lerd/releases/download/v1.4.1-alpha.16/lerd_1.4.1-alpha.16_darwin_amd64.tar.gz"
-    sha256 "56ab72acbcf8f6bffe0b7e01ca029bc29d829b3eb5464e9e9c97b51a190a69c4"
+    url "https://github.com/geodro/lerd/releases/download/v1.4.1-alpha.17/lerd_1.4.1-alpha.17_darwin_amd64.tar.gz"
+    sha256 "8dbeb87037502d9f71977ac7530f1990ebae4f1c08cfd7701d8400ba379e3f24"
 
     define_method(:install) do
       bin.install "lerd"
@@ -21,8 +21,8 @@ class Lerd < Formula
     end
   end
   if Hardware::CPU.arm?
-    url "https://github.com/geodro/lerd/releases/download/v1.4.1-alpha.16/lerd_1.4.1-alpha.16_darwin_arm64.tar.gz"
-    sha256 "742d51a7f74744cd320b2dc09a32672e08b688e5a9a3895c458e67b0940ec5fe"
+    url "https://github.com/geodro/lerd/releases/download/v1.4.1-alpha.17/lerd_1.4.1-alpha.17_darwin_arm64.tar.gz"
+    sha256 "3df0ab9e2bcc31228539a5f1d23b605646df790ceed52e125f3dbb19980effea"
 
     define_method(:install) do
       bin.install "lerd"
