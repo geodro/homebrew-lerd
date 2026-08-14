@@ -5,15 +5,15 @@
 class Lerd < Formula
   desc "Local Laravel development environment for Linux and macOS"
   homepage "https://lerd.sh"
-  version "1.33.0"
+  version "1.33.1"
   license "MIT"
 
   depends_on "podman" if OS.mac?
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/lerd-env/lerd/releases/download/v1.33.0/lerd_1.33.0_darwin_amd64.tar.gz"
-      sha256 "b084cb71a930115bbf27c99568cc875e8f5c7619dcc538bd0021871fa23ee5fc"
+      url "https://github.com/lerd-env/lerd/releases/download/v1.33.1/lerd_1.33.1_darwin_amd64.tar.gz"
+      sha256 "d454e47ffceedd480f16be016e4bb108802ed15624d1786ec9181c6fa5fc441c"
 
       define_method(:install) do
         bin.install "lerd"
@@ -21,8 +21,8 @@ class Lerd < Formula
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/lerd-env/lerd/releases/download/v1.33.0/lerd_1.33.0_darwin_arm64.tar.gz"
-      sha256 "d1273c0712df3b393acde24b5cd90a9fd89a2f40f11e198ce1b2d5ae55bc4c06"
+      url "https://github.com/lerd-env/lerd/releases/download/v1.33.1/lerd_1.33.1_darwin_arm64.tar.gz"
+      sha256 "70b2df60aed9b46f7e704ddc0a93fa1a20370fb6c1df3dde1a4787fbf17a867b"
 
       define_method(:install) do
         bin.install "lerd"
@@ -33,19 +33,36 @@ class Lerd < Formula
 
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      url "https://github.com/lerd-env/lerd/releases/download/v1.33.0/lerd_1.33.0_linux_amd64.tar.gz"
-      sha256 "0e968ae7e5eec70daca9f4981f722f4487f478f9895dc5c88e6d264d2b039f2f"
+      url "https://github.com/lerd-env/lerd/releases/download/v1.33.1/lerd_1.33.1_linux_amd64.tar.gz"
+      sha256 "da305f8bb7cd016dd02aa03d6eae15c12c2fdb8539fe842181375582791e6932"
       define_method(:install) do
         bin.install "lerd"
         bin.install "lerd-tray" if File.exist?("lerd-tray")
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/lerd-env/lerd/releases/download/v1.33.0/lerd_1.33.0_linux_arm64.tar.gz"
-      sha256 "fafd8960db5e0ddbaf67b75583ebc3c34c5110727428622ffea665b80c0d9be6"
+      url "https://github.com/lerd-env/lerd/releases/download/v1.33.1/lerd_1.33.1_linux_arm64.tar.gz"
+      sha256 "bc31b814c70986fc5b773c7c2acd1613db012f3858b30d840083f525d5408a71"
       define_method(:install) do
         bin.install "lerd"
         bin.install "lerd-tray" if File.exist?("lerd-tray")
+      end
+    end
+  end
+
+  def post_install
+    # brew runs this inside a read-only mount namespace with HOME pointed at
+    # a throwaway directory, and everything the repair touches lives in the
+    # real home. On Linux the user's own systemd manager runs it outside that
+    # namespace; elsewhere the direct call is all there is to try.
+    if OS.linux?
+      quiet_system "/bin/sh", "-c",
+        "XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$(id -u)} systemd-run --user --quiet --collect --wait " \
+        "--unit=lerd-post-upgrade #{bin}/lerd post-upgrade"
+    else
+      require "etc"
+      with_env(HOME: Etc.getpwuid(Process.uid).dir, XDG_CONFIG_HOME: nil, XDG_DATA_HOME: nil) do
+        quiet_system bin/"lerd", "post-upgrade"
       end
     end
   end
